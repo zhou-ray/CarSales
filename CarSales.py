@@ -32,14 +32,6 @@ for c in saleinfo_df.columns:
     if saleinfo_df.schema[c].dataType == StringType():
         saleinfo_df = saleinfo_df.withColumn(c,lower(saleinfo_df[c]))
 
-# Consolidate alternate spellings of make
-# correct_brands = ['acura', 'airstream', 'aston martin', 'audi', 'bentley', 'bmw', 'buick', 'cadillac', 'chevrolet',
-#                   'chrysler', 'daewoo', 'dodge', 'dot', 'ferrari', 'fiat', 'fisker', 'ford', 'geo', 'gmc', 'honda',
-#                   'hummer', 'hyundai', 'infiniti', 'isuzu', 'jaguar', 'jeep', 'kia', 'lamborghini', 'land rover',
-#                   'landrover', 'lexus', 'lincoln', 'lotus', 'maserati', 'mazda', 'mercedes-benz', 'mercury', 'mini',
-#                   'mitsubishi', 'nissan', 'oldsmobile', 'plymouth', 'pontiac', 'porsche', 'ram', 'rolls-royce', 'saab',
-#                   'saturn', 'scion', 'smart', 'subaru', 'suzuki', 'tesla', 'toyota', 'volkswagen', 'volvo']
-
 corrections = {
     "chev truck": "chevrolet",
     "dodge tk": "dodge",
@@ -77,15 +69,16 @@ carsales_df = saleinfo_df.join(carinfo_df, 'vin')
 carsales_df.show(truncate=False)
 
 mysql_properties = {
-    "user": "ray",
-    "password": "admin",
-    "driver": "com.mysql.cj.jdbc.Driver"
+    "user": "",
+    "password": "",
+    "driver": "com.mysql.cj.jdbc.Driver",
+    "batchsize": "1000"
 }
 
 
 # # Create the mySQL server
 try:
-    connection = mysql.connector.connect(host='127.0.0.1',user='ray',password='admin')
+    connection = mysql.connector.connect(host='',user='',password='')
     if connection.is_connected():
         cursor = connection.cursor()
 
@@ -99,6 +92,6 @@ finally:
         cursor.close()
         connection.close()
 
-carsales_df.write.jdbc(url="jdbc:mysql://127.0.0.1:3306/cars",table='data',mode='append',properties=mysql_properties)
+carsales_df = carsales_df.repartition(10)
 
-# Run some basic corrections on the MySQL server
+carsales_df.write.jdbc(url="jdbc:mysql://",table='',mode='',properties=mysql_properties)

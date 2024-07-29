@@ -2,7 +2,7 @@ import mysql.connector
 from mysql.connector import Error
 
 try:
-    connection = mysql.connector.connect(host='127.0.0.1',user='ray',password='admin',database='cars')
+    connection = mysql.connector.connect(host='',user='',password='',database='')
     if connection.is_connected():
         cursor = connection.cursor()
 
